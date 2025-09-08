@@ -16,10 +16,10 @@ const {
 
 const app = express();
 
-// Use express built-in parsers instead of body-parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Initialize DB
 app.get("/dbinitialize", async (req, res) => {
   try {
     console.log("DB is getting initialized");
@@ -31,9 +31,10 @@ app.get("/dbinitialize", async (req, res) => {
   }
 });
 
-// ============== Teacher Related endpoints ==============
+// ============== Teacher Routes ==============
 
-app.get("/listTeachers", async (req, res) => {
+// Get all teachers
+app.get("/teachers", async (req, res) => {
   try {
     console.log("Request received to list teachers");
     const data = await readTeachers();
@@ -44,10 +45,11 @@ app.get("/listTeachers", async (req, res) => {
   }
 });
 
-app.post("/getTeacherInfo", async (req, res) => {
+// Get one teacher by ID
+app.get("/teachers/:id", async (req, res) => {
   try {
-    const { id } = req.body;
-    console.log("Request received to get Teacher Info");
+    const { id } = req.params;
+    console.log("Request received to get Teacher Info for ID:", id);
     const data = await readTeacherInfo(id);
     res.status(200).json(data);
   } catch (err) {
@@ -56,22 +58,25 @@ app.post("/getTeacherInfo", async (req, res) => {
   }
 });
 
-app.post("/addTeacher", async (req, res) => {
+// Add a new teacher
+app.post("/teachers", async (req, res) => {
   try {
     const { id, name, age } = req.body;
     console.log("Request received to add teacher. Req body:", req.body);
     const data = await addTeacher(id, name, age);
-    res.status(200).json(data);
+    res.status(201).json(data);
   } catch (err) {
     console.error("Error adding teacher:", err);
     res.status(500).json({ error: "Failed to add teacher" });
   }
 });
 
-app.post("/editTeacher", async (req, res) => {
+// Update teacher by ID
+app.put("/teachers/:id", async (req, res) => {
   try {
-    const { name, age, id } = req.body;
-    console.log("Request received to update teacher. Req body:", req.body);
+    const { id } = req.params;
+    const { name, age } = req.body;
+    console.log("Request received to update teacher. ID:", id, "Body:", req.body);
     const data = await updateTeacher(name, age, id);
     res.status(200).json(data);
   } catch (err) {
@@ -80,10 +85,11 @@ app.post("/editTeacher", async (req, res) => {
   }
 });
 
-app.post("/deleteTeacher", async (req, res) => {
+// Delete teacher by ID
+app.delete("/teachers/:id", async (req, res) => {
   try {
-    const { id } = req.body;
-    console.log("Request received to delete teacher. Req body:", req.body);
+    const { id } = req.params;
+    console.log("Request received to delete teacher. ID:", id);
     const data = await deleteTeacher(id);
     res.status(200).json(data);
   } catch (err) {
@@ -92,9 +98,10 @@ app.post("/deleteTeacher", async (req, res) => {
   }
 });
 
-// ============== Student Related endpoints ==============
+// ============== Student Routes ==============
 
-app.get("/listStudents", async (req, res) => {
+// Get all students
+app.get("/students", async (req, res) => {
   try {
     console.log("Request received to list students");
     const data = await readStudents();
@@ -105,10 +112,11 @@ app.get("/listStudents", async (req, res) => {
   }
 });
 
-app.post("/getStudentInfo", async (req, res) => {
+// Get one student by ID
+app.get("/students/:id", async (req, res) => {
   try {
-    const { id } = req.body;
-    console.log("Request received to get Student Info");
+    const { id } = req.params;
+    console.log("Request received to get Student Info for ID:", id);
     const data = await readStudentInfo(id);
     res.status(200).json(data);
   } catch (err) {
@@ -117,22 +125,25 @@ app.post("/getStudentInfo", async (req, res) => {
   }
 });
 
-app.post("/addStudent", async (req, res) => {
+// Add a new student
+app.post("/students", async (req, res) => {
   try {
     const { id, name, age, hometown } = req.body;
     console.log("Request received to add student. Req body:", req.body);
     const data = await addStudent(id, name, age, hometown);
-    res.status(200).json(data);
+    res.status(201).json(data);
   } catch (err) {
     console.error("Error adding student:", err);
     res.status(500).json({ error: "Failed to add student" });
   }
 });
 
-app.post("/editStudent", async (req, res) => {
+// Update student by ID
+app.put("/students/:id", async (req, res) => {
   try {
-    const { name, age, hometown, id } = req.body;
-    console.log("Request received to update student. Req body:", req.body);
+    const { id } = req.params;
+    const { name, age, hometown } = req.body;
+    console.log("Request received to update student. ID:", id, "Body:", req.body);
     const data = await updateStudent(name, age, hometown, id);
     res.status(200).json(data);
   } catch (err) {
@@ -141,10 +152,11 @@ app.post("/editStudent", async (req, res) => {
   }
 });
 
-app.post("/deleteStudent", async (req, res) => {
+// Delete student by ID
+app.delete("/students/:id", async (req, res) => {
   try {
-    const { id } = req.body;
-    console.log("Request received to delete student. Req body:", req.body);
+    const { id } = req.params;
+    console.log("Request received to delete student. ID:", id);
     const data = await deleteStudent(id);
     res.status(200).json(data);
   } catch (err) {
